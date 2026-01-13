@@ -1,25 +1,39 @@
-# Voting-Application
+# Voting Platform — Spring Boot 3 • Postgres • Flyway • CI • Testcontainers
 
-A small Spring Boot web application that demonstrates a simple voting system with user registration, authentication, admin and user dashboards, and candidate management.
+A production-style voting platform built with **Java 17** and **Spring Boot 3**.  
+Supports **multi-election ballots**, **role-based access control (Admin/User)**, and **vote integrity** enforced at the database level.
+
+---
 
 ## Features
 
-- User registration and login (Spring Security)
-- Admin dashboard with vote totals
-- User dashboard to view profile and cast a vote
-- Candidate management and vote counting (seeded on startup)
-- Thymeleaf templates and static assets for UI
+### Core
+- **Authentication & RBAC** (Admin/User)
+- **Multi-election voting**
+  - `Election` (title, description, start/end window)
+  - `Candidate` belongs to an election
+  - `Vote` belongs to (user + election + candidate)
 
-## Tech stack
+### Vote Integrity (Real-world constraints)
+- **One vote per user per election** enforced by a DB constraint:
+  - `UNIQUE(user_id, election_id)`
+- Transactional vote casting (prevents double voting under concurrency)
+- Optional audit trail table (`vote_audit`) for traceability
 
-- Java 17
-- Spring Boot (parent: 2.6.5)
-- Spring Data JPA, Spring Security, Thymeleaf
-- MySQL (configured via `application.properties`)
-- Maven (wrapper included)
+### Production Signals
+- **Flyway migrations** for schema + seed data
+- **Docker Compose** for local DB setup
+- **GitHub Actions CI** (build + tests)
+- **Integration tests** using **Testcontainers** (runs against a real Postgres instance)
 
-## Prerequisites
+---
 
-- JDK 17
-- MySQL server (or change datasource to a different DB)
-- Git (optional)
+## Tech Stack
+
+- Backend: Java 17, Spring Boot 3 (Web, Security, Data JPA, Validation)
+- DB: PostgreSQL
+- Migrations: Flyway
+- Build: Maven
+- Testing: JUnit 5, Spring Test, Testcontainers
+- Optional: Thymeleaf UI / REST API (depending on your branch)
+
